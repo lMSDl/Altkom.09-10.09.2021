@@ -25,6 +25,9 @@ namespace DAL.Configurations
             //Generowanie wartości z innych tabel nie jest możliwe
             //builder.Property(x => x.Price)
             //    .HasComputedColumnSql($"SUM(Price) FROM dbo.Product WHERE OrderId = {nameof(Order.Id)}");
+
+
+            builder.Property<bool>("IsDeleted");
         }
     }
 }

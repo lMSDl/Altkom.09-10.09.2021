@@ -21,6 +21,7 @@ namespace ConsoleApp
                 var order = new Order();
                 order.DateTime = DateTime.Now.AddDays(-15);
                 context.Add(order);
+                context.Add(new Order());
 
                 for (int i = 0; i < 10; i++)
                 {
@@ -49,6 +50,12 @@ namespace ConsoleApp
                 context.Entry(products.First()).Property("_secret").CurrentValue = "My secret";
                 context.SaveChanges();
             }
-        }
+
+            using (var context = new Context(new DbContextOptionsBuilder().UseSqlServer("Server=(local);Database=EFCA;Integrated Security=true;").Options))
+            {
+                context.Entry(context.Set<Order>().Find(1)).Property("IsDeleted").CurrentValue = true;
+                context.SaveChanges();
+            }
+         }
     }
 }
