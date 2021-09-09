@@ -20,7 +20,11 @@ namespace DAL.Configurations
             //Generowanie "dynamiczne" wartości, które nie są przechowywane w bazie, a obliczane przy próbie pobrania
             //Watoście zmienne w czasie nie mogą być przechowywane w bazie (stred = false)
             builder.Property(x => x.DaysFromOrder)
-                .HasComputedColumnSql($"DATEDIFF(SECOND,[{nameof(DateTime)}],GETDATE())");
+                .HasComputedColumnSql($"DATEDIFF(DAY,[{nameof(DateTime)}],GETDATE())");
+
+            //Generowanie wartości z innych tabel nie jest możliwe
+            //builder.Property(x => x.Price)
+            //    .HasComputedColumnSql($"SUM(Price) FROM dbo.Product WHERE OrderId = {nameof(Order.Id)}");
         }
     }
 }

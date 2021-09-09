@@ -27,6 +27,7 @@ namespace ConsoleApp
                     var product = new Product();
                     if (i % 2 == 0)
                         product.Name = $"Produkt {i}";
+                    product.Order = order;
                     context.Add(product);
                 }
 
