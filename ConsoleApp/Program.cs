@@ -34,9 +34,19 @@ namespace ConsoleApp
 
                 context.SaveChanges();
 
-                context.Set<Product>().ToList().ForEach(x => Console.WriteLine(x.FullName));
+                //Mośliwość odczytu prywatnych pól za pośrednictwem EF.Property
+                context.Set<Product>().Select(x => new {x.FullName, secret = EF.Property<string>(x, "_secret") }).ToList().ForEach(x => Console.WriteLine($"{x.FullName}: {x.secret}"));
 
-                context.Set<Product>().Where(x => x.Name == null).ToList().ForEach(x => x.Name = "new name");
+                var products = context.Set<Product>().Where(x => x.Name == null).ToList();
+                    products.ForEach(x => x.Name = "new name");
+                context.SaveChanges();
+
+                //EF.Property może być używane tylko w zapytaniach EF LINQ. Poniższy zapis rzuci wyjątek.
+                //Console.WriteLine(  EF.Property<string>(products.First(), "_secret") );
+
+                //Dostęp RW dla prywatnego pola przez Entry
+                Console.WriteLine(context.Entry(products.First()).Property("_secret").CurrentValue);
+                context.Entry(products.First()).Property("_secret").CurrentValue = "My secret";
                 context.SaveChanges();
             }
         }

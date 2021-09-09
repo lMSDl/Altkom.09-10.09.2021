@@ -28,6 +28,9 @@ namespace DAL.Configurations
             //Konfiguracja pola zapasowego. Domyślnie EFCore korzysta z pola zapasowego, jeśli jest dostępne.
             builder.Property(x => x.ExpirationDate).HasField("n_expirationDate")
                 .UsePropertyAccessMode(PropertyAccessMode.PreferField);
+
+            //Konfiguracja pola zapasowego bez właściwości (Property)
+            builder.Property("_secret").HasDefaultValueSql("NEWID()");
         }
     }
 }
