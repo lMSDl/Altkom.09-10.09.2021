@@ -25,6 +25,7 @@ namespace DAL.Configurations
             builder.Property(x => x.FullName)
                 .HasComputedColumnSql($"[{nameof(Product.Category)}] + ': ' + [{nameof(Product.Name)}]", stored: true);
 
+            //Konfiguracja pola zapasowego. Domyślnie EFCore korzysta z pola zapasowego, jeśli jest dostępne.
             builder.Property(x => x.ExpirationDate).HasField("n_expirationDate")
                 .UsePropertyAccessMode(PropertyAccessMode.PreferField);
         }

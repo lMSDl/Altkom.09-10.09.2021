@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 
 namespace Models
 {
     public class Product : Entity
     {
+        //Domyślne konwencjie, po których EFCore dopasowuje pola zapasowe (bez potrzeby konfiguracji)
         //private DateTime expirationDate;
         //private DateTime _expirationDate;
         //private DateTime m_expirationDate;
@@ -16,6 +16,7 @@ namespace Models
 
         public string FullName { get; }
 
+        //Konfiguracja pola zapasowego za pomocą adnotacji
         //[BackingField(nameof(n_expirationDate))]
         public DateTime ExpirationDate
         {
