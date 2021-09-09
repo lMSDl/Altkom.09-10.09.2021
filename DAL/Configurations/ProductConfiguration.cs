@@ -16,6 +16,10 @@ namespace DAL.Configurations
             builder.Property(x => x.Category).IsRequired()
             //Ustawianie sztywnej wartości jako domyślna dla właściwości
                 .HasDefaultValue("N/A");
+
+            //Ustawienie wartości domyślnej na podstawie sekwencji
+            builder.Property(x => x.Price)
+                .HasDefaultValueSql("NEXT VALUE FOR sequences.ProductPrice");
         }
     }
 }

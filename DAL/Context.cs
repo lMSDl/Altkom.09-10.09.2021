@@ -44,6 +44,15 @@ namespace DAL
 
             //Automatyczne dodawanie wszystkich konfiguracji ze wskazanego assembly
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(OrderConfiguration).Assembly);
+
+            //Zadeklarowanie nowej sekwencji (schema opcjonalna)
+            modelBuilder.HasSequence<int>("ProductPrice", "sequences")
+                //Opcjonalna konfiguracja zachowania sekwencji
+                .StartsAt(5)
+                .HasMax(10)
+                .HasMin(1)
+                .IncrementsBy(2)
+                .IsCyclic();
         }
     }
 }

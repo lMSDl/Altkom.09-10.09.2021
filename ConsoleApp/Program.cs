@@ -20,8 +20,11 @@ namespace ConsoleApp
                 var order = new Order();
                 context.Add(order);
 
-                var product = new Product();
-                context.Add(product);
+                for (int i = 0; i < 10; i++)
+                {
+                    var product = new Product();
+                    context.Add(product);
+                }
 
                 context.SaveChanges();
             }
