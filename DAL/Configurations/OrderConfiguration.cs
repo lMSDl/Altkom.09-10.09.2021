@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,29 @@ namespace DAL.Configurations
             builder.HasQueryFilter(x => !EF.Property<bool>(x, "IsDeleted") && x.DaysFromOrder <= 15);
             //Jeśli chcemy użyć wielu warunków na jednej tabeli, musimy je zawrzeć w filtrze. Poniższa instrukcja połączona z powyższą będzie powodowała błąd.
             //builder.HasQueryFilter(x => x.DaysFromOrder < 15);
+
+            //Stosowanie konwersji
+
+            //Wykorzystanie konwertera wbudowanego enum -> string
+            //builder.Property(x => x.Type).HasConversion<string>();
+
+            //Ręczna konfiguracja konwesji
+            /*builder.Property(x => x.Type).HasConversion(
+                x => x.ToString(),
+                x => (OrderType)Enum.Parse(typeof(OrderType), x));*/
+
+            //Zastosowanie predefiniowanego konwertera
+            builder.Property(x => x.Type).HasConversion(EnumToBase64Converter<OrderType>());
+            //Dodatkowe obostrzenia tabeli przeniesione zostały do konwertera
+                //.HasMaxLength(20)
+                //.IsUnicode(false);
         }
+
+        public ValueConverter<T, string> EnumToBase64Converter<T>() where T : Enum =>
+            new ValueConverter<T, string>(
+            x => Convert.ToBase64String(Encoding.UTF8.GetBytes(x.ToString()).Reverse().ToArray()),
+            x => (T)Enum.Parse(typeof(T), Encoding.UTF8.GetString(Convert.FromBase64String(x).Reverse().ToArray())),
+            new ConverterMappingHints(size: 20, unicode: false)
+            );
     }
 }

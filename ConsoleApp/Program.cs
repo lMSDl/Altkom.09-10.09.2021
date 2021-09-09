@@ -32,6 +32,7 @@ namespace ConsoleApp
                         product.ExpirationDate = DateTime.Now.AddDays(365);
                         context.Add(product);
                     }
+                    order.Type = (OrderType)ii;
                 }
 
                 context.SaveChanges();
