@@ -13,6 +13,9 @@ namespace DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
+            builder.Property(x => x.DateTime)
+            //Ustawianie zapytania SQL, którego wynik ma być wartością domyślną dla właściwości (SELECT niepotrzebny)
+                .HasDefaultValueSql("GETDATE()");
         }
     }
 }

@@ -13,6 +13,9 @@ namespace DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
+            builder.Property(x => x.Category).IsRequired()
+            //Ustawianie sztywnej wartości jako domyślna dla właściwości
+                .HasDefaultValue("N/A");
         }
     }
 }

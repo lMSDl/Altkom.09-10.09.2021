@@ -11,6 +11,7 @@ namespace DAL
      * 
      * dotnet ef migrations add <nazwa migracji> (dodanie nowej migracji)
      * dotnet ef migrations remove [-f] (usunięcie ostatniej migracji, opcjonalny parametr -f jako wymuszenie przy braku połączenia z bazą danych)
+     * dotnet ef database update (aktualizacja bazy danych)
     */
 
     public sealed class Context : DbContext
@@ -28,8 +29,7 @@ namespace DAL
             base.OnConfiguring(optionsBuilder);
             
             //Opcjonalnie, można sprawdzić czy Context został już skonfigurowany
-            //if(!optionsBuilder.IsConfigured)
-
+            if(!optionsBuilder.IsConfigured)
             //Określamy z jakiego dostawcy bazy danych będziemu korzystać
                 optionsBuilder.UseSqlServer();
         }
