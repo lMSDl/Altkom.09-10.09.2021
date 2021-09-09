@@ -10,6 +10,9 @@ namespace Models
     {
         public string Name { get; set; }
         public string Category { get; set; }
+
+        public string FullName { get; }
+
         public DateTime ExpirationDate { get; set; }
 
         public int Price { get; set; }

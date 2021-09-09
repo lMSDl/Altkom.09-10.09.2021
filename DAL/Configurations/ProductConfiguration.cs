@@ -20,6 +20,10 @@ namespace DAL.Configurations
             //Ustawienie wartości domyślnej na podstawie sekwencji
             builder.Property(x => x.Price)
                 .HasDefaultValueSql("NEXT VALUE FOR sequences.ProductPrice");
+
+            //Generowanie wartości, która będzie przechowywana w bazie danych i aktualizowana przy zmianie właściwości zależnych
+            builder.Property(x => x.FullName)
+                .HasComputedColumnSql($"[{nameof(Product.Category)}] + ': ' + [{nameof(Product.Name)}]", stored: true);
         }
     }
 }
