@@ -1,19 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Models
 {
     public class Product : Entity
     {
+        //private DateTime expirationDate;
+        //private DateTime _expirationDate;
+        //private DateTime m_expirationDate;
+
+        private DateTime n_expirationDate;
+
         public string Name { get; set; }
         public string Category { get; set; }
 
         public string FullName { get; }
 
-        public DateTime ExpirationDate { get; set; }
+        //[BackingField(nameof(n_expirationDate))]
+        public DateTime ExpirationDate
+        {
+            get => new DateTime(2016, 11, 2);
+            set => n_expirationDate = value;
+        }
 
         public int Price { get; set; }
 

@@ -24,6 +24,9 @@ namespace DAL.Configurations
             //Generowanie wartości, która będzie przechowywana w bazie danych i aktualizowana przy zmianie właściwości zależnych
             builder.Property(x => x.FullName)
                 .HasComputedColumnSql($"[{nameof(Product.Category)}] + ': ' + [{nameof(Product.Name)}]", stored: true);
+
+            builder.Property(x => x.ExpirationDate).HasField("n_expirationDate")
+                .UsePropertyAccessMode(PropertyAccessMode.PreferField);
         }
     }
 }

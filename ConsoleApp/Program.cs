@@ -28,6 +28,7 @@ namespace ConsoleApp
                     if (i % 2 == 0)
                         product.Name = $"Produkt {i}";
                     product.Order = order;
+                    product.ExpirationDate = DateTime.Now.AddDays(365);
                     context.Add(product);
                 }
 
