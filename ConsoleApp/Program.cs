@@ -72,12 +72,32 @@ namespace ConsoleApp
                 //Zapytania mogące zwracać różne wyniki przy stosowaniu obowiązkowych pól z relacjami i filtrów globalnych
                 context.Set<Product>().ToList().ForEach(x => Console.WriteLine($"1. ProductId: {x.Id}"));
                 context.Set<Product>().Include(x => x.Order).ToList().ForEach(x => Console.WriteLine($"2. ProductId: {x.Id}"));
+
+            }
+
+            using (var context = GetContext())
+            {
+                var orders = context.Set<Order>().ToList();
+
+                //Eager loading
+                //var ordersEager = context.Set<Order>().Include(x => x.Products).ToList();
+
+                //Explicit loading
+                //context.Set<Order>().Load();
+                //context.Set<Product>().Load();
+                //var ordersExplicit = context.Set<Order>().ToList();
+
+                //Lazy loading - jeśli poprawnie skonfigurowany
+                Console.WriteLine(orders.First().Products.LastOrDefault()?.FullName ?? "Brak");
             }
         }
 
         private static Context GetContext()
         {
-            return new Context(new DbContextOptionsBuilder().UseSqlServer("Server=(local);Database=EFCA;Integrated Security=true;").Options);
+            return new Context(new DbContextOptionsBuilder()
+                //LazyLoading (proxy) - włączenie proxy
+                //.UseLazyLoadingProxies()
+                .UseSqlServer("Server=(local);Database=EFCA;Integrated Security=true;").Options);
         }
     }
 }
