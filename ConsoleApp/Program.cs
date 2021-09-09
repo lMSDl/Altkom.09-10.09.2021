@@ -10,7 +10,7 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            using (var context = new Context(new DbContextOptionsBuilder().UseSqlServer("Server=(local);Database=EFCA;Integrated Security=true;").Options))
+            using (var context = GetContext())
             {
                 //Wyczyszczenie bazy danych
                 context.Database.EnsureDeleted();
@@ -18,28 +18,29 @@ namespace ConsoleApp
                 //Migracja bazy do najnowszej wersji
                 context.Database.Migrate();
 
-                var order = new Order();
-                order.DateTime = DateTime.Now.AddDays(-15);
-                context.Add(order);
-                context.Add(new Order());
-
-                for (int i = 0; i < 10; i++)
+                for (int ii = 0; ii < 2; ii++)
                 {
-                    var product = new Product();
-                    if (i % 2 == 0)
-                        product.Name = $"Produkt {i}";
-                    product.Order = order;
-                    product.ExpirationDate = DateTime.Now.AddDays(365);
-                    context.Add(product);
+                    var order = new Order();
+                    order.DateTime = DateTime.Now.AddDays(-15);
+                    context.Add(order);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        var product = new Product();
+                        if (i % 2 == 0)
+                            product.Name = $"Produkt {i}";
+                        product.Order = order;
+                        product.ExpirationDate = DateTime.Now.AddDays(365);
+                        context.Add(product);
+                    }
                 }
 
                 context.SaveChanges();
 
                 //Mośliwość odczytu prywatnych pól za pośrednictwem EF.Property
-                context.Set<Product>().Select(x => new {x.FullName, secret = EF.Property<string>(x, "_secret") }).ToList().ForEach(x => Console.WriteLine($"{x.FullName}: {x.secret}"));
+                context.Set<Product>().Select(x => new { x.FullName, secret = EF.Property<string>(x, "_secret") }).ToList().ForEach(x => Console.WriteLine($"{x.FullName}: {x.secret}"));
 
                 var products = context.Set<Product>().Where(x => x.Name == null).ToList();
-                    products.ForEach(x => x.Name = "new name");
+                products.ForEach(x => x.Name = "new name");
                 context.SaveChanges();
 
                 //EF.Property może być używane tylko w zapytaniach EF LINQ. Poniższy zapis rzuci wyjątek.
@@ -51,11 +52,32 @@ namespace ConsoleApp
                 context.SaveChanges();
             }
 
-            using (var context = new Context(new DbContextOptionsBuilder().UseSqlServer("Server=(local);Database=EFCA;Integrated Security=true;").Options))
+            using (var context = GetContext())
             {
                 context.Entry(context.Set<Order>().Find(1)).Property("IsDeleted").CurrentValue = true;
                 context.SaveChanges();
             }
-         }
+
+
+            using (var context = GetContext())
+            {
+                context.Set<Order>()
+                    //Filtrowanie usuniętych zamówień zastąpione przez filtr globalny
+                    //.Where(x => !EF.Property<bool>(x, "IsDeleted"))
+
+                    //W celu zignorowania filtrów globalnych stosujemy:
+                    //.IgnoreQueryFilters()
+                    .Select(x => x.Id).ToList().ForEach(x => Console.WriteLine($"OrderId: {x}"));
+
+                //Zapytania mogące zwracać różne wyniki przy stosowaniu obowiązkowych pól z relacjami i filtrów globalnych
+                context.Set<Product>().ToList().ForEach(x => Console.WriteLine($"1. ProductId: {x.Id}"));
+                context.Set<Product>().Include(x => x.Order).ToList().ForEach(x => Console.WriteLine($"2. ProductId: {x.Id}"));
+            }
+        }
+
+        private static Context GetContext()
+        {
+            return new Context(new DbContextOptionsBuilder().UseSqlServer("Server=(local);Database=EFCA;Integrated Security=true;").Options);
+        }
     }
 }

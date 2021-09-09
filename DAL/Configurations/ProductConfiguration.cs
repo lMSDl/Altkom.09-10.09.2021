@@ -13,6 +13,11 @@ namespace DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
+            //FiltryGlobalne - ustawienie powiązania między obiektami na obowiązkowe może powodować różne wyniki przy stosowaniu filrtów globalnych.
+            //W celu uniknięcia tego problemu, nalezy "poluzować" relacje (pole opcjonalne) lub zastosować dodatkowy filtr globalny z "drugiej strony" (jak poniżej)
+            builder.HasOne(x => x.Order).WithMany(x => x.Products).IsRequired();
+            builder.HasQueryFilter(x => !EF.Property<bool>(x.Order, "IsDeleted") && x.Order.DaysFromOrder <= 15);
+
             builder.Property(x => x.Category).IsRequired()
             //Ustawianie sztywnej wartości jako domyślna dla właściwości
                 .HasDefaultValue("N/A");

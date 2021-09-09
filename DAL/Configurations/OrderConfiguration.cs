@@ -26,8 +26,13 @@ namespace DAL.Configurations
             //builder.Property(x => x.Price)
             //    .HasComputedColumnSql($"SUM(Price) FROM dbo.Product WHERE OrderId = {nameof(Order.Id)}");
 
-
+            //ShadowProperty - kolumna w bazie danych, która nie ma odpowiednika w modelu
             builder.Property<bool>("IsDeleted");
+
+            //Filtr globalny - zapytanie LINQ WHERE, które dołączane jest do każdego zapytania na tabeli
+            builder.HasQueryFilter(x => !EF.Property<bool>(x, "IsDeleted") && x.DaysFromOrder <= 15);
+            //Jeśli chcemy użyć wielu warunków na jednej tabeli, musimy je zawrzeć w filtrze. Poniższa instrukcja połączona z powyższą będzie powodowała błąd.
+            //builder.HasQueryFilter(x => x.DaysFromOrder < 15);
         }
     }
 }
