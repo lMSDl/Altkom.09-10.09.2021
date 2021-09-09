@@ -19,7 +19,7 @@ namespace DAL.Migrations
                 table: "Order",
                 type: "int",
                 nullable: false,
-                computedColumnSql: "DATEDIFF(SECOND,[DateTime],GETDATE())");
+                computedColumnSql: "DATEDIFF(DAY,[DateTime],GETDATE())");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

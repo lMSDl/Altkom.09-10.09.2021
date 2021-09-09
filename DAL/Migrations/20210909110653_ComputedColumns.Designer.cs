@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20210909102646_ComputedColumns")]
+    [Migration("20210909110653_ComputedColumns")]
     partial class ComputedColumns
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,7 @@ namespace DAL.Migrations
                     b.Property<int>("DaysFromOrder")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("int")
-                        .HasComputedColumnSql("DATEDIFF(SECOND,[DateTime],GETDATE())");
+                        .HasComputedColumnSql("DATEDIFF(DAY,[DateTime],GETDATE())");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");

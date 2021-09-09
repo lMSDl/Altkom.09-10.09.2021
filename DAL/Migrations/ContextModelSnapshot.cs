@@ -41,7 +41,7 @@ namespace DAL.Migrations
                     b.Property<int>("DaysFromOrder")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("int")
-                        .HasComputedColumnSql("DATEDIFF(SECOND,[DateTime],GETDATE())");
+                        .HasComputedColumnSql("DATEDIFF(DAY,[DateTime],GETDATE())");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
