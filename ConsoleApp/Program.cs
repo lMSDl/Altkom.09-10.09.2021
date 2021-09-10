@@ -37,6 +37,11 @@ namespace ConsoleApp
                     order.Type = (OrderType)ii;
                 }
 
+                context.ChangeTracker.DetectChanges();
+                Console.WriteLine(context.ChangeTracker.DebugView.ShortView);
+                Console.WriteLine("---------------");
+                Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+
                 context.SaveChanges();
 
                 //Mośliwość odczytu prywatnych pól za pośrednictwem EF.Property
@@ -44,6 +49,12 @@ namespace ConsoleApp
 
                 var products = context.Set<Product>().Where(x => x.Name == null).ToList();
                 products.ForEach(x => x.Name = "new name");
+
+                
+                context.ChangeTracker.DetectChanges();
+                Console.WriteLine(context.ChangeTracker.DebugView.ShortView);
+                Console.WriteLine("---------------");
+                Console.WriteLine(context.ChangeTracker.DebugView.LongView);
                 context.SaveChanges();
 
                 //EF.Property może być używane tylko w zapytaniach EF LINQ. Poniższy zapis rzuci wyjątek.
@@ -149,7 +160,7 @@ namespace ConsoleApp
 
             using (var context = GetContext())
             {
-                var person = new Person();
+                var person = new Person() { FirstName = "adam"};
                 context.Add(person);
                 person = new Student();
                 context.Add(person);
@@ -157,7 +168,23 @@ namespace ConsoleApp
                 context.Add(person);
                 context.SaveChanges();
 
-                person = context.Set<Person>().Find(2);
+                //context.Entry(person).State = EntityState.Detached;
+                context.Set<Person>().Local.Remove(person);
+
+                person = new Person() { Id = 3 , LastName = "Adamski"};
+                context.Attach(person);
+                //context.Entry(person).State = EntityState.Modified;
+                context.Entry(person).Property(nameof(Person.LastName)).IsModified = true;
+
+                context.ChangeTracker.DetectChanges();
+                Console.WriteLine(context.ChangeTracker.DebugView.ShortView);
+                Console.WriteLine("---------------");
+                Console.WriteLine(context.ChangeTracker.DebugView.LongView);
+                context.SaveChanges();
+
+
+
+                person = context.Set<Person>().AsNoTracking().SingleOrDefault(x => x.Id == 2);
                 person = context.Set<Teacher>().Find(2);
                 person = context.Set<Student>().Find(1);
 
