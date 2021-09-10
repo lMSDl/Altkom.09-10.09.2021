@@ -169,6 +169,9 @@ namespace ConsoleApp
                 var points = context.Set<Address>().Select(x => x.Location).ToList();
 
                 var distance = points.First().Distance(points.Last());
+
+                //Wywołanie prekompilowanego zapytania
+                var products = Context.GetProductsForOrder(context, 2);
             }
         }
 

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DAL
@@ -26,6 +27,11 @@ namespace DAL
         {
             _connectionString = connectionString;
         }
+
+        //Prekompilowanie zapytania
+        public static Func<Context, int, IEnumerable<Product>> GetProductsForOrder { get; } =
+            EF.CompileQuery((Context context, int id) => context.Set<Product>().Where(x => x.Order.Id == id));
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
