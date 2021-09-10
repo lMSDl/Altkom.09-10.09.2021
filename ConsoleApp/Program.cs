@@ -91,6 +91,15 @@ namespace ConsoleApp
                 //Lazy loading - jeśli poprawnie skonfigurowany
                 Console.WriteLine(orders.First().Products.LastOrDefault()?.FullName ?? "Brak");
             }
+
+            using (var context = GetContext())
+            {
+                //Wywołanie procedury składowej bez SELECT
+                context.Database.ExecuteSqlRaw("ChangePrice @p0", 5);
+
+                //Wywołanie procedusy z SELECT i materializacja do obiektu
+                var orders = context.Set<OrderSummary>().FromSqlInterpolated($"GetOrderSummary {1}").ToList();
+            }
         }
 
         private static Context GetContext()

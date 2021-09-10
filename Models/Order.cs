@@ -20,7 +20,7 @@ namespace Models
         public OrderType Type { get; set; }
         public DateTime DateTime { get; set; }
         public int DaysFromOrder { get; }
-        public int Price { get; }
+        public int Price { get; set; }
 
         //LazyLoading (proxy) - wymagane są właściwości wirtualne
         //public virtual List<Product> Products { get; set; } = new List<Product>();
