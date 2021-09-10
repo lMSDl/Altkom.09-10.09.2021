@@ -143,6 +143,29 @@ namespace ConsoleApp
                         }
                     }
             }
+
+
+            using (var context = GetContext())
+            {
+                var person = new Person();
+                context.Add(person);
+                person = new Student();
+                context.Add(person);
+                person = new Teacher();
+                context.Add(person);
+                context.SaveChanges();
+
+                person = context.Set<Person>().Find(2);
+                person = context.Set<Teacher>().Find(2);
+                person = context.Set<Student>().Find(1);
+
+                Address address = new AddressInCity();
+                context.Add(address);
+                address = new AddressInTown();
+                context.Add(address);
+                context.SaveChanges();
+
+            }
         }
 
         private static Context GetContext()

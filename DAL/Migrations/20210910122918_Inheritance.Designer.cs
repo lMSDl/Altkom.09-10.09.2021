@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DAL.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20210910122918_Inheritance")]
+    partial class Inheritance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -173,10 +175,6 @@ namespace DAL.Migrations
                 {
                     b.HasBaseType("Models.Address");
 
-                    b.Property<DateTime>("BuildedIn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("In");
-
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
@@ -186,10 +184,6 @@ namespace DAL.Migrations
             modelBuilder.Entity("Models.AddressInTown", b =>
                 {
                     b.HasBaseType("Models.Address");
-
-                    b.Property<DateTime>("FundedIn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("In");
 
                     b.Property<string>("Town")
                         .HasColumnType("nvarchar(max)");
@@ -204,11 +198,6 @@ namespace DAL.Migrations
                     b.Property<float>("AvegargeDegree")
                         .HasColumnType("real");
 
-                    b.Property<DateTime>("StudentFrom")
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("From");
-
                     b.HasDiscriminator().HasValue("Student");
                 });
 
@@ -219,38 +208,7 @@ namespace DAL.Migrations
                     b.Property<string>("Specialization")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("TeacherFrom")
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("From");
-
                     b.HasDiscriminator().HasValue("Teacher");
-                });
-
-            modelBuilder.Entity("Models.Address", b =>
-                {
-                    b.OwnsOne("Models.Location", "Location", b1 =>
-                        {
-                            b1.Property<int>("AddressId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                            b1.Property<float>("Latitude")
-                                .HasColumnType("real");
-
-                            b1.Property<float>("Longitude")
-                                .HasColumnType("real");
-
-                            b1.HasKey("AddressId");
-
-                            b1.ToTable("Address");
-
-                            b1.WithOwner()
-                                .HasForeignKey("AddressId");
-                        });
-
-                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("Models.Product", b =>

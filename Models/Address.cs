@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public abstract class Address : Entity
+    {
+        public string Street { get; set; }
+
+        public Location Location { get; set; }
+    }
+
+    public class Location
+    {
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
+    }
+}
