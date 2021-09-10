@@ -49,7 +49,10 @@ namespace ConsoleApp
 
                 //Dostęp RW dla prywatnego pola przez Entry
                 Console.WriteLine(context.Entry(products.First()).Property("_secret").CurrentValue);
+
+                products = context.Set<Product>().Take(1).ToList();
                 context.Entry(products.First()).Property("_secret").CurrentValue = "My secret";
+
                 context.SaveChanges();
             }
 
@@ -101,6 +104,44 @@ namespace ConsoleApp
                 var orders = context.Set<OrderSummary>().FromSqlInterpolated($"GetOrderSummary {1}").ToList();
 
                 orders = context.Set<OrderSummary>().ToList();
+
+                var product = context.Set<Product>().Find(10);
+                product.Name = product.Name + "_";
+
+                //Pętla w celu ponownej opróby zapisu przy wystąpieniu  konfliktu współbieżności
+                bool saved = false;
+                while (!saved)
+                    try
+                    {
+                        //Porównanie tokenów między OryginalValus a DatabaseValues
+                        context.SaveChanges();
+                        saved = true;
+                    }
+                    catch (DbUpdateConcurrencyException e)
+                    {
+                        foreach (var entry in e.Entries)
+                        {
+                            if (entry.Entity is Product)
+                            {
+                                var databaseValues = entry.GetDatabaseValues();
+
+                                {
+                                    //Opcjonalny blok, gdy chcemy zmienić currentValues. Jeśli mają być zachowane dane z currentValues, to możemy go pominąć.
+                                    var currentValues = entry.CurrentValues;
+                                    foreach (var property in currentValues.Properties)
+                                    {
+                                        var currentValue = currentValues[property];
+                                        var databaseValue = databaseValues[property];
+
+                                        currentValues[property] = currentValue;
+                                    }
+                                }
+
+                                //Zastąpienie originalValues tymi z bazy danych w celu aktualizacji tokena współbieżności, aby ponownie nie wystąpił wyjątek
+                                entry.OriginalValues.SetValues(databaseValues);
+                            }
+                        }
+                    }
             }
         }
 

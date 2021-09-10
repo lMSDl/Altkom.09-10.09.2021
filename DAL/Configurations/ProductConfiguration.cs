@@ -45,6 +45,12 @@ namespace DAL.Configurations
             //        (old, updated, person) => new Product { LastEdited = DateTime.Now  })
             //    )
             //);
+
+            //Konflikty współbieżności: Tylko obserwowanie czy właściwosć uległa zmianie
+            builder.Property(x => x.Category).IsConcurrencyToken();
+
+            //Konflikty współbieżności: Automatyczna aktualizacja znacznika przy edycji i obserwowanie czy właściwosć uległa zmianie
+            builder.Property(x => x.Timestamp).IsRowVersion();
         }
     }
 }

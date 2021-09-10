@@ -49,5 +49,7 @@ namespace Models
 
 
         public DateTime LastEdited { get; set; }
+
+        public byte[] Timestamp { get; set; }
     }
 }
