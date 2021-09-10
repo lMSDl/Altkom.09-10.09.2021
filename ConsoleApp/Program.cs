@@ -1,5 +1,6 @@
 ﻿using DAL;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Models;
 using NetTopologySuite.Geometries;
 using System;
@@ -172,12 +173,37 @@ namespace ConsoleApp
 
                 //Wywołanie prekompilowanego zapytania
                 var products = Context.GetProductsForOrder(context, 2);
+
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var product = context.Set<Product>().Find(7);
+                        product.Name = product.Name + "5";
+
+                        context.SaveChanges();
+
+                        if (new Random().Next(1, 10) == 1)
+                            throw new Exception();
+
+                        product = context.Set<Product>().Find(10);
+                        product.Name = product.Name + "10";
+                        context.SaveChanges();
+
+                        transaction.Commit();
+                    }
+                    catch(Exception e)
+                    {
+
+                    }
+                }
+
             }
         }
 
-        private static Context GetContext()
+        private static Context GetContext(string database = "EFCA")
         {
-            return new Context("Server=(local);Database=EFCA;Integrated Security=true;");
+            return new Context($"Server=(local);Database={database};Integrated Security=true;");
         }
     }
 }
