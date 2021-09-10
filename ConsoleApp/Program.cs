@@ -1,6 +1,7 @@
 ﻿using DAL;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using NetTopologySuite.Geometries;
 using System;
 using System.Linq;
 
@@ -159,21 +160,21 @@ namespace ConsoleApp
                 person = context.Set<Teacher>().Find(2);
                 person = context.Set<Student>().Find(1);
 
-                Address address = new AddressInCity();
+                Address address = new AddressInCity() { Location = new Point(53.2f, 25.8f) { SRID = 4326 }  };
                 context.Add(address);
-                address = new AddressInTown();
+                address = new AddressInTown() { Location = new Point(52.2f, 27.8f) { SRID = 4326 } };
                 context.Add(address);
                 context.SaveChanges();
 
+                var points = context.Set<Address>().Select(x => x.Location).ToList();
+
+                var distance = points.First().Distance(points.Last());
             }
         }
 
         private static Context GetContext()
         {
-            return new Context(new DbContextOptionsBuilder()
-                //LazyLoading (proxy) - włączenie proxy
-                //.UseLazyLoadingProxies()
-                .UseSqlServer("Server=(local);Database=EFCA;Integrated Security=true;").Options);
+            return new Context("Server=(local);Database=EFCA;Integrated Security=true;");
         }
     }
 }

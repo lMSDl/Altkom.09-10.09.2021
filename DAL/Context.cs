@@ -2,6 +2,7 @@
 using Laraue.EfCoreTriggers.SqlServer.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using NetTopologySuite.Geometries;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -19,24 +20,32 @@ namespace DAL
 
     public sealed class Context : DbContext
     {
+        private string _connectionString;
         public Context()
         {
         }
 
-        public Context([NotNull] DbContextOptions options) : base(options)
+        public Context(string connectionString)
         {
+            _connectionString = connectionString;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            
-            //Opcjonalnie, można sprawdzić czy Context został już skonfigurowany
-            if(!optionsBuilder.IsConfigured)
-            //Określamy z jakiego dostawcy bazy danych będziemu korzystać
-                optionsBuilder.UseSqlServer();
 
-            optionsBuilder.UseSqlServerTriggers();
+            //Opcjonalnie, można sprawdzić czy Context został już skonfigurowany
+            //if(!optionsBuilder.IsConfigured)
+            //Określamy z jakiego dostawcy bazy danych będziemu korzystać
+            if(_connectionString == null)
+                optionsBuilder.UseSqlServer(x => x.UseNetTopologySuite());
+            else
+            optionsBuilder.UseSqlServer(_connectionString, x => x.UseNetTopologySuite());
+
+                //LazyLoading (proxy) - włączenie proxy
+                //.UseLazyLoadingProxies()
+                
+                //.UseSqlServerTriggers();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -58,6 +67,8 @@ namespace DAL
                 .HasMin(1)
                 .IncrementsBy(2)
                 .IsCyclic();
+
+
         }
 
         public override int SaveChanges()

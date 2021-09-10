@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="5.0.9" />
+    <PackageReference Include="NetTopologySuite" Version="2.3.0" />
   </ItemGroup>
 
 </Project>
