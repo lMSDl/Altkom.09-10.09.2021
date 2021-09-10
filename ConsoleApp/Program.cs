@@ -99,6 +99,8 @@ namespace ConsoleApp
 
                 //Wywołanie procedusy z SELECT i materializacja do obiektu
                 var orders = context.Set<OrderSummary>().FromSqlInterpolated($"GetOrderSummary {1}").ToList();
+
+                orders = context.Set<OrderSummary>().ToList();
             }
         }
 

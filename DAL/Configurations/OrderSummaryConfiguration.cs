@@ -17,7 +17,9 @@ namespace DAL.Configurations
             builder.HasNoKey();
 
             //Nie chcemy tworzyć tabeli dla obiektu
-            builder.ToTable(null);
+            //builder.ToTable(null);
+
+            builder.ToView("View_OrderSummary");
         }
     }
 }
