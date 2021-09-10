@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Laraue.EfCoreTriggers.Common.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models;
 using System;
@@ -36,6 +37,14 @@ namespace DAL.Configurations
 
             //Konfiguracja pola zapasowego bez właściwości (Property)
             builder.Property("_secret").HasDefaultValueSql("NEWID()");
+
+            //https://github.com/win7user10/Laraue.EfCoreTriggers
+            //builder.AfterUpdate(trigget => trigget.Action(
+            //    action => action.Update<Product>(
+            //        (old, updated, person) => person.Id == old.Id,
+            //        (old, updated, person) => new Product { LastEdited = DateTime.Now  })
+            //    )
+            //);
         }
     }
 }

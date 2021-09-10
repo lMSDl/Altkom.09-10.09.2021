@@ -1,4 +1,5 @@
 ﻿using DAL.Configurations;
+using Laraue.EfCoreTriggers.SqlServer.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -32,6 +33,8 @@ namespace DAL
             if(!optionsBuilder.IsConfigured)
             //Określamy z jakiego dostawcy bazy danych będziemu korzystać
                 optionsBuilder.UseSqlServer();
+
+            optionsBuilder.UseSqlServerTriggers();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

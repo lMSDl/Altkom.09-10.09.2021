@@ -46,5 +46,8 @@ namespace Models
         //Prywatne pole, do którego dostęp będziemy uzyskiwali tylko dzięli EFCore.
         private string _secret;
         private Order order;
+
+
+        public DateTime LastEdited { get; set; }
     }
 }
