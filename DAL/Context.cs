@@ -1,8 +1,10 @@
 ﻿using DAL.Configurations;
 using Laraue.EfCoreTriggers.SqlServer.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Models;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace DAL
 {
@@ -56,6 +58,18 @@ namespace DAL
                 .HasMin(1)
                 .IncrementsBy(2)
                 .IsCyclic();
+        }
+
+        public override int SaveChanges()
+        {
+            var now = DateTime.Now;
+            ChangeTracker.Entries<IEditedDateTime>()
+                .Where(x => x.State == EntityState.Modified)
+                .Select(x => x.Entity)
+                .ToList()
+                .ForEach(x => x.EditedDateTime = now);
+
+            return base.SaveChanges();
         }
     }
 }

@@ -10,10 +10,12 @@ using System.Threading.Tasks;
 
 namespace DAL.Configurations
 {
-    class ProductConfiguration : IEntityTypeConfiguration<Product>
+    class ProductConfiguration : EditedDateTimeConfiguration<Product>//IEntityTypeConfiguration<Product>
     {
-        public void Configure(EntityTypeBuilder<Product> builder)
+        public override void Configure(EntityTypeBuilder<Product> builder)
         {
+            base.Configure(builder);
+
             //FiltryGlobalne - ustawienie powiązania między obiektami na obowiązkowe może powodować różne wyniki przy stosowaniu filrtów globalnych.
             //W celu uniknięcia tego problemu, nalezy "poluzować" relacje (pole opcjonalne) lub zastosować dodatkowy filtr globalny z "drugiej strony" (jak poniżej)
             builder.HasOne(x => x.Order).WithMany(x => x.Products).IsRequired();

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Models
 {
-    public class Order : Entity
+    public class Order : Entity, IEditedDateTime
     {
         private ILazyLoader _lazyLoader;
         private List<Product> products = new List<Product>();
@@ -27,5 +27,8 @@ namespace Models
 
         //LazyLoading (ILazyLoader) - wykrozystujemy wstrzyknięty serwis do ładowania właściwości
         public List<Product> Products { get => _lazyLoader.Load(this, ref products); set => products = value; }
+
+
+        public DateTime EditedDateTime { get; set; }
     }
 }

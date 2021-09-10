@@ -3,7 +3,7 @@ using System;
 
 namespace Models
 {
-    public class Product : Entity
+    public class Product : Entity, IEditedDateTime
     {
         private ILazyLoader _lazyLoader;
 
@@ -51,5 +51,6 @@ namespace Models
         public DateTime LastEdited { get; set; }
 
         public byte[] Timestamp { get; set; }
+        public DateTime EditedDateTime { get; set; }
     }
 }

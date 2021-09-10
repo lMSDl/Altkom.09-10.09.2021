@@ -10,10 +10,12 @@ using System.Threading.Tasks;
 
 namespace DAL.Configurations
 {
-    public class OrderConfiguration : IEntityTypeConfiguration<Order>
+    public class OrderConfiguration : EditedDateTimeConfiguration<Order>//IEntityTypeConfiguration<Order>
     {
-        public void Configure(EntityTypeBuilder<Order> builder)
+        public override void Configure(EntityTypeBuilder<Order> builder)
         {
+            base.Configure(builder);
+
             builder.Ignore(x => x.Price);
 
             builder.Property(x => x.DateTime)
