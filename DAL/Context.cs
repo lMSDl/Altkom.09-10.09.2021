@@ -1,10 +1,7 @@
 ﻿using DAL.Configurations;
-using Laraue.EfCoreTriggers.SqlServer.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Models;
-using NetTopologySuite.Geometries;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace DAL
@@ -37,15 +34,15 @@ namespace DAL
             //Opcjonalnie, można sprawdzić czy Context został już skonfigurowany
             //if(!optionsBuilder.IsConfigured)
             //Określamy z jakiego dostawcy bazy danych będziemu korzystać
-            if(_connectionString == null)
+            if (_connectionString == null)
                 optionsBuilder.UseSqlServer(x => x.UseNetTopologySuite());
             else
-            optionsBuilder.UseSqlServer(_connectionString, x => x.UseNetTopologySuite());
+                optionsBuilder.UseSqlServer(_connectionString, x => x.UseNetTopologySuite());
 
-                //LazyLoading (proxy) - włączenie proxy
-                //.UseLazyLoadingProxies()
-                
-                //.UseSqlServerTriggers();
+            //LazyLoading (proxy) - włączenie proxy
+            //.UseLazyLoadingProxies()
+
+            //.UseSqlServerTriggers();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -68,6 +65,14 @@ namespace DAL
                 .IncrementsBy(2)
                 .IsCyclic();
 
+            //Własne konwencje
+            //https://github.com/dotnet/efcore/issues/214
+            modelBuilder.Model.GetEntityTypes()
+                .Where(x => typeof(Person).IsAssignableFrom(x.ClrType))
+                .SelectMany(x => x.GetProperties())
+                .Where(x => x.PropertyInfo?.PropertyType == typeof(DateTime))
+                .ToList()
+                .ForEach(x => x.SetColumnType("datetime2(4)"));
 
         }
 
